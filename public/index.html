@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>هُدوء — احجز جلستك المنزلية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EFE9DC;
+    --surface:#FBF8F2;
+    --surface-alt:#F2ECDD;
+    --ink:#211F1A;
+    --ink-soft:#5B564C;
+    --ink-faint:#8B8477;
+    --brand:#1F3D39;
+    --brand-light:#2F5750;
+    --accent:#A9793C;
+    --accent-soft:#E9DAB8;
+    --success:#3F6B4F;
+    --danger:#9C4A3C;
+    --border:#DDD3BE;
+    --radius-s:10px;
+    --radius-m:16px;
+    --radius-l:26px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    font-weight:400;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Amiri', serif;
+    font-weight:700;
+    color:var(--brand);
+    margin:0;
+  }
+  .app{
+    max-width:460px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--surface);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 0 60px rgba(31,61,57,0.08);
+  }
+  /* header */
+  .topbar{
+    padding:22px 22px 16px;
+    background:var(--brand);
+    color:#F4EFE2;
+    border-radius:0 0 var(--radius-l) var(--radius-l);
+  }
+  .topbar .brand{
+    font-family:'Amiri', serif;
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:0.5px;
+  }
+  .topbar .tagline{
+    font-size:13px;
+    color:#C9C2AE;
+    margin-top:2px;
+  }
+  .progress-wrap{
+    margin-top:18px;
+  }
+  .progress-label{
+    font-size:12.5px;
+    color:#D9D3BF;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+  }
+  .progress-track{
+    height:4px;
+    background:rgba(244,239,226,0.18);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:4px;
+    transition:width .4s ease;
+  }
+  /* body */
+  .content{
+    padding:24px 22px 120px;
+    flex:1;
+  }
+  .step{display:none;}
+  .step.active{display:block; animation:fadeIn .35s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .step h2{font-size:21px; margin-bottom:6px;}
+  .step .sub{color:var(--ink-soft); font-size:14px; margin-bottom:20px;}
+
+  /* service rows */
+  .service-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 14px;
+    background:var(--surface-alt);
+    border-radius:var(--radius-s);
+    border-right:3px solid transparent;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .service-row.selected{
+    border-right-color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .service-row .icon{font-size:26px; width:36px; text-align:center;}
+  .service-row .info{flex:1;}
+  .service-row .info .name{font-weight:600; font-size:15.5px;}
+  .service-row .info .meta{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  .service-row .price{font-weight:600; font-size:14.5px; color:var(--brand);}
+  .check-dot{
+    width:20px;height:20px;border-radius:50%;
+    border:2px solid var(--ink-faint);
+    flex-shrink:0;
+    position:relative;
+  }
+  .service-row.selected .check-dot{
+    border-color:var(--accent);
+    background:var(--accent);
+  }
+  .service-row.selected .check-dot::after{
+    content:'';
+    position:absolute; inset:0; margin:auto;
+    width:8px;height:8px;border-radius:50%;
+    background:var(--surface);
+  }
+
+  /* staff tiles */
+  .staff-grid{display:flex; gap:12px; margin-bottom:10px;}
+  .staff-tile{
+    flex:1;
+    background:var(--surface-alt);
+    border:2px solid transparent;
+    border-radius:var(--radius-m);
+    padding:18px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .2s ease;
+  }
+  .staff-tile.selected{border-color:var(--accent); background:var(--accent-soft);}
+  .staff-tile .flag{font-size:30px;}
+  .staff-tile .label{font-size:13.5px; font-weight:600; margin-top:8px;}
+  .staff-tile .rating{font-size:12.5px; color:var(--ink-soft); margin-top:4px;}
+  .staff-tile .avail{font-size:11.5px; color:var(--success); margin-top:6px;}
+  .no-pref{
+    width:100%;
+    text-align:center;
+    padding:13px;
+    background:transparent;
+    border:1.5px dashed var(--border);
+    border-radius:var(--radius-s);
+    color:var(--ink-soft);
+    font-size:14px;
+    cursor:pointer;
+    margin-top:2px;
+  }
+  .no-pref.selected{
+    border-color:var(--accent);
+    color:var(--brand);
+    border-style:solid;
+    background:var(--accent-soft);
+  }
+
+  /* date/time */
+  .date-scroll{
+    display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; margin-bottom:18px;
+    scrollbar-width:none;
+  }
+  .date-scroll::-webkit-scrollbar{display:none;}
+  .date-chip{
+    flex:0 0 auto;
+    min-width:58px;
+    text-align:center;
+    padding:10px 6px;
+    background:var(--surface-alt);
+    border-radius:var(--radius-s);
+    cursor:pointer;
+    border:2px solid transparent;
+  }
+  .date-chip.selected{border-color:var(--accent); background:var(--accent-soft);}
+  .date-chip .dow{font-size:11.5px; color:var(--ink-soft);}
+  .date-chip .dnum{font-size:17px; font-weight:700; color:var(--brand); margin-top:2px;}
+  .time-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:9px;
+  }
+  .time-slot{
+    text-align:center;
+    padding:11px 4px;
+    background:var(--surface-alt);
+    border-radius:var(--radius-s);
+    font-size:13.5px;
+    cursor:pointer;
+    border:2px solid transparent;
+  }
+  .time-slot.selected{border-color:var(--accent); background:var(--accent-soft); font-weight:600;}
+  .time-slot.disabled{opacity:.35; text-decoration:line-through; cursor:not-allowed;}
+
+  /* form fields */
+  label.field-label{display:block; font-size:13.5px; font-weight:600; color:var(--brand); margin:16px 0 7px;}
+  label.field-label:first-child{margin-top:0;}
+  input[type=text], input[type=tel]{
+    width:100%;
+    padding:13px 14px;
+    background:var(--surface-alt);
+    border:1.5px solid var(--border);
+    border-radius:var(--radius-s);
+    font-family:inherit;
+    font-size:15px;
+    color:var(--ink);
+  }
+  input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .loc-btn{
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    background:var(--brand);
+    color:#F4EFE2;
+    border:none;
+    border-radius:var(--radius-s);
+    font-family:inherit;
+    font-size:14.5px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .loc-result{
+    margin-top:10px;
+    font-size:13px;
+    color:var(--success);
+    background:#EAF1EC;
+    padding:10px 12px;
+    border-radius:var(--radius-s);
+    display:none;
+  }
+  .loc-result.show{display:block;}
+
+  /* terms */
+  .terms-box{
+    background:var(--surface-alt);
+    border-radius:var(--radius-m);
+    padding:16px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    max-height:220px;
+    overflow-y:auto;
+    line-height:1.8;
+  }
+  .agree-row{
+    display:flex; align-items:flex-start; gap:10px;
+    margin-top:16px;
+    padding:14px;
+    background:var(--surface-alt);
+    border-radius:var(--radius-s);
+    cursor:pointer;
+  }
+  .agree-row input{margin-top:3px; width:18px; height:18px; accent-color:var(--brand);}
+  .agree-row span{font-size:13.5px; color:var(--ink-soft);}
+
+  /* summary */
+  .summary-card{
+    background:var(--surface-alt);
+    border-radius:var(--radius-m);
+    padding:18px;
+  }
+  .summary-row{
+    display:flex; justify-content:space-between;
+    font-size:14px; padding:8px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .summary-row:last-of-type{border-bottom:none;}
+  .summary-row .label{color:var(--ink-soft);}
+  .summary-row .val{font-weight:600;}
+  .summary-total{
+    display:flex; justify-content:space-between;
+    margin-top:12px; padding-top:14px;
+    border-top:2px solid var(--brand);
+    font-size:17px; font-weight:700; color:var(--brand);
+  }
+
+  /* footer / nav buttons */
+  .footer-nav{
+    position:sticky;
+    bottom:0;
+    max-width:460px;
+    margin:0 auto;
+    background:linear-gradient(to top, var(--surface) 70%, transparent);
+    padding:18px 22px 22px;
+    display:flex;
+    gap:10px;
+  }
+  .btn{
+    flex:1;
+    padding:15px;
+    border-radius:999px;
+    border:none;
+    font-family:inherit;
+    font-size:15.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .08s ease, opacity .2s ease;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--brand); color:#F4EFE2;}
+  .btn-primary:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-ghost{background:transparent; color:var(--ink-soft); border:1.5px solid var(--border); flex:0 0 96px;}
+
+  /* confirmation */
+  .confirm-wrap{text-align:center; padding-top:20px;}
+  .confirm-icon{
+    width:74px;height:74px;border-radius:50%;
+    background:var(--success);
+    color:#fff; font-size:34px;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 18px;
+  }
+  .booking-id{
+    display:inline-block; margin-top:6px;
+    font-size:13px; color:var(--ink-soft);
+    background:var(--surface-alt); padding:6px 14px; border-radius:20px;
+  }
+  .tracker{
+    margin-top:26px; text-align:right;
+  }
+  .tracker-item{
+    display:flex; align-items:center; gap:12px;
+    padding:11px 0;
+    opacity:.4;
+  }
+  .tracker-item.done{opacity:1;}
+  .tracker-item.current{opacity:1;}
+  .tracker-dot{
+    width:12px;height:12px;border-radius:50%;
+    background:var(--ink-faint);
+    flex-shrink:0;
+  }
+  .tracker-item.done .tracker-dot{background:var(--success);}
+  .tracker-item.current .tracker-dot{background:var(--accent); box-shadow:0 0 0 4px var(--accent-soft);}
+  .tracker-item .t-label{font-size:14px;}
+  .tracker-item .t-time{font-size:11.5px; color:var(--ink-faint); margin-right:auto;}
+  .demo-btn{
+    margin-top:22px;
+    width:100%;
+    padding:13px;
+    background:transparent;
+    border:1.5px dashed var(--border);
+    border-radius:var(--radius-s);
+    color:var(--ink-soft);
+    font-size:13.5px;
+    cursor:pointer;
+  }
+  .rating-panel{
+    margin-top:26px; text-align:right;
+    background:var(--surface-alt); border-radius:var(--radius-m);
+    padding:18px;
+  }
+  .stars-row{
+    display:flex; flex-direction:row-reverse; justify-content:center;
+    gap:6px; font-size:30px; margin-top:4px; cursor:pointer;
+  }
+  .stars-row.small{font-size:22px;}
+  .stars-row span{ color:var(--border); transition:color .15s ease; }
+  .stars-row span.on{ color:var(--accent); }
+  .rating-sub-label{
+    text-align:center; font-size:12px; color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  #ratingComment{
+    width:100%; padding:12px; border:1.5px solid var(--border); border-radius:var(--radius-s);
+    font-family:inherit; font-size:14px; resize:vertical; margin-top:4px; margin-bottom:12px;
+    background:var(--surface);
+  }
+  .action-submit-btn{
+    width:100%; padding:13px; border:none; border-radius:999px;
+    background:var(--brand); color:#F4EFE2; font-family:inherit; font-size:14.5px; font-weight:600;
+    cursor:pointer;
+  }
+  .rating-done{
+    margin-top:22px; padding:16px; text-align:center;
+    background:var(--accent-soft); color:var(--brand); border-radius:var(--radius-m);
+    font-size:14px; font-weight:600;
+  }
+  .manage-panel{margin-top:22px;}
+  .manage-row{display:flex; gap:10px;}
+  .manage-btn{
+    flex:1; padding:12px; border-radius:999px; border:1.5px solid var(--border);
+    background:transparent; color:var(--ink-soft); font-family:inherit; font-size:13.5px; cursor:pointer;
+  }
+  .manage-btn.danger{color:var(--danger); border-color:var(--danger);}
+  .mini-modal{
+    position:fixed; inset:0; background:rgba(33,31,26,0.5);
+    display:flex; align-items:center; justify-content:center; z-index:70; padding:20px;
+  }
+  .mini-modal-box{
+    background:var(--surface); border-radius:var(--radius-l); padding:22px; width:100%; max-width:380px;
+    max-height:85vh; overflow-y:auto;
+  }
+  .cancelled-note{
+    margin-top:22px; padding:16px; text-align:center; border-radius:var(--radius-m);
+    background:var(--surface-alt); color:var(--ink-soft); font-size:13.5px; line-height:1.8;
+  }
+  .whatsapp-fab{
+    position:absolute; bottom:100px; left:24px; z-index:40;
+    width:52px; height:52px; border-radius:50%;
+    background:#25D366; color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px; text-decoration:none;
+    box-shadow:0 6px 18px rgba(37,211,102,0.4);
+  }
+  .note{
+    font-size:11.5px;
+    color:var(--ink-faint);
+    text-align:center;
+    margin-top:20px;
+    line-height:1.7;
+  }
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--brand); color:#F4EFE2;
+    padding:12px 22px; border-radius:999px;
+    font-size:13.5px;
+    box-shadow:0 8px 24px rgba(0,0,0,.2);
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease, bottom .3s ease;
+    z-index:50;
+  }
+  .toast.show{opacity:1; bottom:34px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">هُدوء</div>
+    <div class="tagline">جلسات عناية منزلية — خصوصية تامة، حجز خلال دقيقة</div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="stepLabel">الخطوة 1 من 7 — اختيار الخدمة</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:14.3%"></div></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <a href="#" id="whatsappFab" class="whatsapp-fab" style="display:none;" target="_blank" rel="noopener">
+      💬
+    </a>
+
+    <!-- Step 1: Services -->
+    <div class="step active" data-step="1">
+      <h2>اختر خدماتك</h2>
+      <div class="sub">يمكنك اختيار أكثر من خدمة في نفس الحجز</div>
+      <div id="servicesList"></div>
+    </div>
+
+    <!-- Step 2: Staff -->
+    <div class="step" data-step="2">
+      <h2>اختيار الموظف</h2>
+      <div class="sub">لخصوصيتك، لا تُعرض صور أو بيانات شخصية للموظفين</div>
+      <div class="staff-grid" id="staffGrid"></div>
+      <div class="no-pref" id="noPrefBtn">لا يهمني — اختر الموظف المتاح</div>
+    </div>
+
+    <!-- Step 3: Date & time -->
+    <div class="step" data-step="3">
+      <h2>التاريخ والوقت</h2>
+      <div class="sub">تُعرض فقط الأوقات المتاحة فعليًا بعد احتساب وقت التنقل والتجهيز</div>
+      <div class="date-scroll" id="dateScroll"></div>
+      <div class="time-grid" id="timeGrid"></div>
+    </div>
+
+    <!-- Step 4: Location -->
+    <div class="step" data-step="4">
+      <h2>موقع الخدمة</h2>
+      <div class="sub">نحتاج موقعك لتحديد وقت الوصول بدقة</div>
+      <label class="field-label">العنوان (حي / وصف مختصر)</label>
+      <input type="text" id="addressInput" placeholder="مثال: حي الروضة، شارع الأمير سلطان">
+      <button class="loc-btn" id="geoBtn">📍 تحديد موقعي تلقائيًا</button>
+      <div class="loc-result" id="geoResult"></div>
+    </div>
+
+    <!-- Step 5: Contact -->
+    <div class="step" data-step="5">
+      <h2>بياناتك</h2>
+      <div class="sub">لا حاجة لإنشاء حساب — الاسم ورقم الجوال فقط</div>
+      <label class="field-label">الاسم</label>
+      <input type="text" id="nameInput" placeholder="اسمك الكامل">
+      <label class="field-label">رقم الجوال</label>
+      <input type="tel" id="phoneInput" placeholder="05xxxxxxxx">
+    </div>
+
+    <!-- Step 6: Terms -->
+    <div class="step" data-step="6">
+      <h2>الشروط والسياسة</h2>
+      <div class="terms-box">
+        الخدمات المقدمة مهنية ومخصصة للعناية الشخصية فقط. يُمنع منعًا باتًا طلب أي أعمال أو تصرفات غير مهنية أو مخالفة للآداب والأخلاق أو الأنظمة من الموظفين. كما يُمنع التحرش أو الإساءة اللفظية أو الجسدية أو أي سلوك غير لائق.
+        <br><br>
+        يحق للموظف إنهاء الخدمة ومغادرة الموقع فورًا عند مخالفة هذه الشروط، وتُطبَّق سياسة الإلغاء والاسترجاع المعتمدة.
+        <br><br>
+        عند تأكيد الدفع، يُحجز الموعد مؤقتًا لمدة 10 دقائق لإتمام العملية. عدم إكمال الدفع خلال هذه المدة يلغي الحجز المؤقت ويعيد إتاحة الموعد.
+        <br><br>
+        لا تُشارك بياناتك الشخصية مع الموظف بعد انتهاء الخدمة، ويقتصر التواصل معك على قنوات المشروع الرسمية.
+      </div>
+      <label class="agree-row" for="agreeCheck">
+        <input type="checkbox" id="agreeCheck">
+        <span>أوافق على شروط الحجز وسياسة الإلغاء والاسترجاع وسياسة السلوك والاحترام.</span>
+      </label>
+    </div>
+
+    <!-- Step 7: Summary & pay -->
+    <div class="step" data-step="7">
+      <h2>ملخص الحجز</h2>
+      <div class="summary-card" id="summaryCard"></div>
+      <div class="note">الدفع الإلكتروني آمن ومُشفّر. سيتم تأكيد حجزك فور نجاح عملية الدفع.</div>
+    </div>
+
+    <!-- Step 8: Confirmation -->
+    <div class="step" data-step="8">
+      <div class="confirm-wrap">
+        <div class="confirm-icon">✓</div>
+        <h2>تم تأكيد حجزك</h2>
+        <div class="sub" style="margin-top:6px;">شكرًا لاختيارك هُدوء</div>
+        <div class="booking-id" id="bookingIdLabel"></div>
+
+        <div class="tracker" id="trackerList"></div>
+        <button class="demo-btn" id="demoBtn">↻ تحديث حالة الحجز</button>
+
+        <div class="manage-panel" id="managePanel" style="display:none;">
+          <div class="manage-row">
+            <button class="manage-btn" id="openRescheduleBtn">📅 تعديل الموعد</button>
+            <button class="manage-btn danger" id="openCancelBtn">إلغاء الحجز</button>
+          </div>
+          <div class="note" style="margin-top:8px;">يمكن التعديل أو الإلغاء فقط قبل توجّه الموظف. إلغاء الحجز بعد التأكيد يخصم رسوم إلغاء قدرها 10 ر.س.</div>
+        </div>
+
+        <!-- Cancel confirmation -->
+        <div class="mini-modal" id="cancelModal" style="display:none;">
+          <div class="mini-modal-box">
+            <h3 style="font-size:16px;">تأكيد إلغاء الحجز</h3>
+            <p class="sub" style="margin:10px 0 16px;">سيتم خصم رسوم إلغاء قدرها <b>10 ر.س</b>، وسيُسترد المبلغ المتبقي. هل أنت متأكد؟</p>
+            <button class="action-submit-btn" id="confirmCancelBtn">نعم، ألغِ الحجز</button>
+            <button class="manage-btn" id="dismissCancelBtn" style="margin-top:8px;">تراجع</button>
+          </div>
+        </div>
+
+        <!-- Reschedule picker -->
+        <div class="mini-modal" id="rescheduleModal" style="display:none;">
+          <div class="mini-modal-box">
+            <h3 style="font-size:16px; margin-bottom:12px;">اختر موعدًا جديدًا</h3>
+            <div class="date-scroll" id="rescheduleDateScroll"></div>
+            <div class="time-grid" id="rescheduleTimeGrid"></div>
+            <button class="action-submit-btn" id="confirmRescheduleBtn" style="margin-top:14px;" disabled>تأكيد الموعد الجديد</button>
+            <button class="manage-btn" id="dismissRescheduleBtn" style="margin-top:8px;">إغلاق</button>
+          </div>
+        </div>
+
+        <div class="cancelled-note" id="cancelledNote" style="display:none;"></div>
+
+        <div class="rating-panel" id="ratingPanel" style="display:none;">
+          <h3 style="font-size:16px; margin-bottom:4px;">كيف كانت تجربتك؟</h3>
+          <div class="sub" style="margin-bottom:14px;">تقييمك يساعدنا على تحسين الخدمة</div>
+
+          <div class="stars-row" id="starsOverall" data-value="0"></div>
+          <div class="rating-sub-label">التقييم العام</div>
+
+          <div class="stars-row small" id="starsCleanliness" data-value="0"></div>
+          <div class="rating-sub-label">النظافة والترتيب</div>
+
+          <div class="stars-row small" id="starsPunctuality" data-value="0"></div>
+          <div class="rating-sub-label">الالتزام بالوقت</div>
+
+          <textarea id="ratingComment" placeholder="أضف تعليقًا (اختياري)" rows="3"></textarea>
+          <button class="action-submit-btn" id="submitRatingBtn">إرسال التقييم</button>
+        </div>
+        <div class="rating-done" id="ratingDone" style="display:none;">
+          ⭐ شكرًا لتقييمك — نُقدّر رأيك
+        </div>
+
+        <div class="note">للتواصل بخصوص حجزك، استخدم دعم العملاء الرسمي داخل التطبيق فقط — لن يُشارك رقم الموظف معك في أي وقت.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-nav" id="footerNav">
+    <button class="btn btn-ghost" id="backBtn">السابق</button>
+    <button class="btn btn-primary" id="nextBtn">التالي</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ---------- backend connection ---------- */
+const API_BASE = (new URLSearchParams(location.search).get('api'))
+  || (location.protocol === 'file:' ? 'http://localhost:4000' : '');
+
+async function api(path, options={}){
+  const res = await fetch(API_BASE + path, {
+    headers:{'Content-Type':'application/json'},
+    ...options,
+  });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error || 'حدث خطأ في الاتصال بالخادم');
+  return data;
+}
+
+const SERVICE_ICONS = {'مساج':'💆','حمام مغربي':'🛁','بديكير':'💅','منيكير':'💅'};
+function iconFor(name){ return SERVICE_ICONS[name] || '✨'; }
+
+const TRACKER_STEPS = [
+  {key:'confirmed',  label:'تم تأكيد الحجز'},
+  {key:'arrived',    label:'وصل الموظف'},
+  {key:'in_service', label:'الخدمة جارية الآن'},
+  {key:'wrapup',     label:'اكتملت الخدمات — جاري الترتيب'},
+  {key:'completed',  label:'تم إنهاء الحجز'},
+];
+function statusToIndex(status){
+  const map = {confirmed:0, staff_onway:0, arrived:1, prep:1, in_service:2, between_services:2, wrapup:3, completed:4};
+  return map[status] ?? 0;
+}
+
+/* ---------- state ---------- */
+let state = {
+  step:1,
+  servicesCatalog:[],   // من الخادم
+  staffCatalog:[],      // من الخادم
+  services:[],          // معرّفات مختارة (أرقام)
+  staff:null,           // رقم أو 'any'
+  dateIdx:null,
+  dateStr:null,
+  time:null,
+  address:'',
+  geo:null,
+  name:'',
+  phone:'',
+  agree:false,
+  bookingId:null,
+};
+
+const totalSteps = 7;
+
+/* ---------- render: services ---------- */
+function renderServices(){
+  const el = document.getElementById('servicesList');
+  if(!state.servicesCatalog.length){
+    el.innerHTML = '<div class="sub">تعذّر تحميل الخدمات — تأكد من تشغيل الخادم (Backend) على '+API_BASE+'</div>';
+    return;
+  }
+  el.innerHTML = '';
+  state.servicesCatalog.forEach(s=>{
+    const row = document.createElement('div');
+    row.className = 'service-row' + (state.services.includes(s.id) ? ' selected':'');
+    row.innerHTML = `
+      <div class="check-dot"></div>
+      <div class="icon">${iconFor(s.name)}</div>
+      <div class="info">
+        <div class="name">${s.name}</div>
+        <div class="meta">مدة الخدمة ${s.duration_minutes} دقيقة</div>
+      </div>
+      <div class="price">${s.price} ر.س</div>
+    `;
+    row.addEventListener('click', ()=>{
+      const i = state.services.indexOf(s.id);
+      if(i>-1) state.services.splice(i,1); else state.services.push(s.id);
+      renderServices();
+      updateNextEnabled();
+    });
+    el.appendChild(row);
+  });
+}
+
+/* ---------- render: staff ---------- */
+function renderStaff(){
+  const grid = document.getElementById('staffGrid');
+  grid.innerHTML = '';
+  state.staffCatalog.forEach(m=>{
+    const available = !m.is_on_leave;
+    const tile = document.createElement('div');
+    tile.className = 'staff-tile' + (state.staff===m.id ? ' selected':'');
+    tile.innerHTML = `
+      <div class="flag">${m.flag}</div>
+      <div class="label">${m.internal_name}</div>
+      <div class="rating">⭐ ${m.rating_count>0 ? m.rating_avg.toFixed(1) : 'جديدة'}</div>
+      <div class="avail">${available ? 'متاحة' : 'غير متاحة الآن'}</div>
+    `;
+    if(available){
+      tile.addEventListener('click', ()=>{
+        state.staff = m.id;
+        renderStaff();
+        document.getElementById('noPrefBtn').classList.remove('selected');
+        updateNextEnabled();
+      });
+    } else {
+      tile.style.opacity = .45;
+      tile.style.cursor = 'not-allowed';
+    }
+    grid.appendChild(tile);
+  });
+}
+document.getElementById('noPrefBtn').addEventListener('click', ()=>{
+  state.staff = 'any';
+  document.getElementById('noPrefBtn').classList.add('selected');
+  renderStaff();
+  updateNextEnabled();
+});
+
+/* ---------- render: date & time (real availability from the booking engine) ---------- */
+const DOW = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+function renderDates(){
+  const wrap = document.getElementById('dateScroll');
+  wrap.innerHTML = '';
+  const today = new Date();
+  for(let i=0;i<7;i++){
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    const chip = document.createElement('div');
+    chip.className = 'date-chip' + (state.dateIdx===i ? ' selected':'');
+    chip.innerHTML = `<div class="dow">${DOW[d.getDay()]}</div><div class="dnum">${d.getDate()}</div>`;
+    chip.addEventListener('click', ()=>{
+      state.dateIdx = i;
+      state.dateStr = d.toISOString().slice(0,10);
+      state.time = null;
+      renderDates(); renderTimes();
+      updateNextEnabled();
+    });
+    wrap.appendChild(chip);
+  }
+}
+async function renderTimes(){
+  const grid = document.getElementById('timeGrid');
+  if(state.dateIdx===null){
+    grid.innerHTML = '<div class="sub" style="grid-column:1/-1;">اختر تاريخًا أولًا لعرض الأوقات المتاحة</div>';
+    return;
+  }
+  grid.innerHTML = '<div class="sub" style="grid-column:1/-1;">جاري التحقق من الأوقات المتاحة فعليًا...</div>';
+  try{
+    const qs = new URLSearchParams({
+      date: state.dateStr,
+      serviceIds: state.services.join(','),
+      staffId: state.staff,
+    });
+    if(state.geo){ qs.set('lat', state.geo.lat); qs.set('lng', state.geo.lng); }
+    const result = await api('/api/availability?' + qs.toString());
+    state.availableSlots = result.slots;
+    if(!result.slots.length){
+      grid.innerHTML = '<div class="sub" style="grid-column:1/-1;">لا توجد أوقات متاحة في هذا اليوم — جرّب تاريخًا آخر</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    result.slots.forEach(slot=>{
+      const el = document.createElement('div');
+      el.className = 'time-slot' + (state.time===slot.time ? ' selected':'');
+      el.textContent = slot.time;
+      el.addEventListener('click', ()=>{
+        state.time = slot.time;
+        if(slot.staffOptions) state.resolvedStaffId = slot.staffOptions[0]; // عند "لا يهمني"
+        renderTimes();
+        updateNextEnabled();
+      });
+      grid.appendChild(el);
+    });
+  }catch(err){
+    grid.innerHTML = `<div class="sub" style="grid-column:1/-1;">تعذّر تحميل الأوقات: ${err.message}</div>`;
+  }
+}
+
+/* ---------- location ---------- */
+document.getElementById('addressInput').addEventListener('input', e=>{
+  state.address = e.target.value;
+  updateNextEnabled();
+});
+document.getElementById('geoBtn').addEventListener('click', ()=>{
+  const resultEl = document.getElementById('geoResult');
+  if(!navigator.geolocation){
+    resultEl.textContent = 'المتصفح لا يدعم تحديد الموقع تلقائيًا — الرجاء إدخال العنوان يدويًا.';
+    resultEl.classList.add('show');
+    return;
+  }
+  resultEl.textContent = 'جاري تحديد موقعك...';
+  resultEl.classList.add('show');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    state.geo = {lat:pos.coords.latitude.toFixed(5), lng:pos.coords.longitude.toFixed(5)};
+    resultEl.textContent = `✓ تم تحديد الموقع (${state.geo.lat}, ${state.geo.lng})`;
+    updateNextEnabled();
+  }, err=>{
+    resultEl.textContent = 'تعذّر تحديد الموقع — الرجاء إدخال العنوان يدويًا.';
+  });
+});
+
+/* ---------- contact ---------- */
+document.getElementById('nameInput').addEventListener('input', e=>{ state.name=e.target.value; updateNextEnabled(); });
+document.getElementById('phoneInput').addEventListener('input', e=>{ state.phone=e.target.value; updateNextEnabled(); });
+
+/* ---------- terms ---------- */
+document.getElementById('agreeCheck').addEventListener('change', e=>{
+  state.agree = e.target.checked;
+  updateNextEnabled();
+});
+
+/* ---------- summary ---------- */
+function renderSummary(){
+  const card = document.getElementById('summaryCard');
+  const chosen = state.servicesCatalog.filter(s=>state.services.includes(s.id));
+  const totalDuration = chosen.reduce((a,s)=>a+s.duration_minutes,0);
+  const totalPrice = chosen.reduce((a,s)=>a+s.price,0);
+  const staffLabel = state.staff==='any' ? 'حسب التوفر' : (state.staffCatalog.find(m=>m.id===state.staff)||{}).internal_name || '—';
+  const dateLabel = state.dateIdx!==null ? (()=>{
+    const d = new Date(); d.setDate(d.getDate()+state.dateIdx);
+    return DOW[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1);
+  })() : '—';
+
+  let rows = chosen.map(s=>`
+    <div class="summary-row"><span class="label">${iconFor(s.name)} ${s.name}</span><span class="val">${s.duration_minutes} دقيقة</span></div>
+  `).join('');
+
+  card.innerHTML = `
+    ${rows}
+    <div class="summary-row"><span class="label">إجمالي مدة الخدمات</span><span class="val">${totalDuration} دقيقة</span></div>
+    <div class="summary-row"><span class="label">الموظف</span><span class="val">${staffLabel}</span></div>
+    <div class="summary-row"><span class="label">الموعد</span><span class="val">${dateLabel} — ${state.time||'—'}</span></div>
+    <div class="summary-row"><span class="label">الموقع</span><span class="val">${state.address || (state.geo?'تم تحديده عبر الخريطة':'—')}</span></div>
+    <div class="summary-total"><span>الإجمالي</span><span>${totalPrice} ر.س</span></div>
+  `;
+}
+
+/* ---------- tracker (confirmation) — يعرض الحالة الحقيقية من الخادم ---------- */
+function renderTracker(currentIdx){
+  const wrap = document.getElementById('trackerList');
+  wrap.innerHTML = TRACKER_STEPS.map((t,i)=>`
+    <div class="tracker-item ${i<currentIdx?'done':(i===currentIdx?'current':'')}">
+      <div class="tracker-dot"></div>
+      <div class="t-label">${t.label}</div>
+    </div>
+  `).join('');
+}
+document.getElementById('demoBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('demoBtn');
+  btn.textContent = 'جاري التحقق من الخادم...';
+  try{
+    const b = await api('/api/bookings/' + state.bookingId);
+    state.staffIdResolved = b.staff_id;
+    renderTracker(statusToIndex(b.status));
+    btn.textContent = '↻ تحديث حالة الحجز';
+    showToast('الحالة الحالية: ' + (TRACKER_STEPS[statusToIndex(b.status)]?.label || b.status));
+    document.getElementById('managePanel').style.display = b.can_modify ? 'block' : 'none';
+    if(b.status==='completed' && !state.ratingSubmitted){
+      document.getElementById('ratingPanel').style.display = 'block';
+    }
+  }catch(err){
+    btn.textContent = '↻ تحديث حالة الحجز';
+    showToast('تعذّر جلب الحالة: ' + err.message);
+  }
+});
+
+/* ---------- cancel / reschedule ---------- */
+document.getElementById('openCancelBtn').addEventListener('click', ()=>{
+  document.getElementById('cancelModal').style.display = 'flex';
+});
+document.getElementById('dismissCancelBtn').addEventListener('click', ()=>{
+  document.getElementById('cancelModal').style.display = 'none';
+});
+document.getElementById('confirmCancelBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('confirmCancelBtn');
+  btn.disabled = true; btn.textContent = 'جاري الإلغاء...';
+  try{
+    const res = await api('/api/bookings/' + state.bookingId + '/cancel', {method:'POST'});
+    document.getElementById('cancelModal').style.display = 'none';
+    document.getElementById('managePanel').style.display = 'none';
+    document.getElementById('trackerList').style.display = 'none';
+    document.getElementById('demoBtn').style.display = 'none';
+    const note = document.getElementById('cancelledNote');
+    note.style.display = 'block';
+    note.textContent = `تم إلغاء حجزك. رسوم الإلغاء: ${res.cancellationFee} ر.س — المبلغ المسترد: ${res.refundAmount} ر.س`;
+  }catch(err){
+    showToast('تعذّر الإلغاء: ' + err.message);
+  }finally{
+    btn.disabled = false; btn.textContent = 'نعم، ألغِ الحجز';
+  }
+});
+
+let rescheduleState = {dateIdx:null, dateStr:null, time:null};
+document.getElementById('openRescheduleBtn').addEventListener('click', ()=>{
+  rescheduleState = {dateIdx:null, dateStr:null, time:null};
+  document.getElementById('confirmRescheduleBtn').disabled = true;
+  renderRescheduleDates();
+  document.getElementById('rescheduleTimeGrid').innerHTML = '<div class="sub" style="grid-column:1/-1;">اختر تاريخًا أولًا</div>';
+  document.getElementById('rescheduleModal').style.display = 'flex';
+});
+document.getElementById('dismissRescheduleBtn').addEventListener('click', ()=>{
+  document.getElementById('rescheduleModal').style.display = 'none';
+});
+function renderRescheduleDates(){
+  const wrap = document.getElementById('rescheduleDateScroll');
+  wrap.innerHTML = '';
+  const today = new Date();
+  for(let i=0;i<7;i++){
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    const chip = document.createElement('div');
+    chip.className = 'date-chip' + (rescheduleState.dateIdx===i ? ' selected':'');
+    chip.innerHTML = `<div class="dow">${DOW[d.getDay()]}</div><div class="dnum">${d.getDate()}</div>`;
+    chip.addEventListener('click', ()=>{
+      rescheduleState.dateIdx = i;
+      rescheduleState.dateStr = d.toISOString().slice(0,10);
+      rescheduleState.time = null;
+      document.getElementById('confirmRescheduleBtn').disabled = true;
+      renderRescheduleDates();
+      renderRescheduleTimes();
+    });
+    wrap.appendChild(chip);
+  }
+}
+async function renderRescheduleTimes(){
+  const grid = document.getElementById('rescheduleTimeGrid');
+  grid.innerHTML = '<div class="sub" style="grid-column:1/-1;">جاري التحقق من الأوقات المتاحة...</div>';
+  try{
+    const qs = new URLSearchParams({
+      date: rescheduleState.dateStr,
+      serviceIds: state.services.join(','),
+      staffId: state.staffIdResolved || state.staff,
+      excludeBookingId: state.bookingId,
+    });
+    const result = await api('/api/availability?' + qs.toString());
+    if(!result.slots.length){
+      grid.innerHTML = '<div class="sub" style="grid-column:1/-1;">لا توجد أوقات متاحة في هذا اليوم</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    result.slots.forEach(slot=>{
+      const el = document.createElement('div');
+      el.className = 'time-slot' + (rescheduleState.time===slot.time ? ' selected':'');
+      el.textContent = slot.time;
+      el.addEventListener('click', ()=>{
+        rescheduleState.time = slot.time;
+        renderRescheduleTimes();
+        document.getElementById('confirmRescheduleBtn').disabled = false;
+      });
+      grid.appendChild(el);
+    });
+  }catch(err){
+    grid.innerHTML = `<div class="sub" style="grid-column:1/-1;">${err.message}</div>`;
+  }
+}
+document.getElementById('confirmRescheduleBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('confirmRescheduleBtn');
+  btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+  try{
+    await api('/api/bookings/' + state.bookingId + '/reschedule', {
+      method:'POST',
+      body: JSON.stringify({date: rescheduleState.dateStr, time: rescheduleState.time}),
+    });
+    document.getElementById('rescheduleModal').style.display = 'none';
+    showToast('تم تعديل الموعد بنجاح');
+    document.getElementById('demoBtn').click();
+  }catch(err){
+    showToast('تعذّر تعديل الموعد: ' + err.message);
+  }finally{
+    btn.disabled = false; btn.textContent = 'تأكيد الموعد الجديد';
+  }
+});
+
+/* ---------- rating ---------- */
+function buildStars(elId, max=5){
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
+  for(let i=1;i<=max;i++){
+    const span = document.createElement('span');
+    span.textContent = '★';
+    span.dataset.val = i;
+    span.addEventListener('click', ()=>{
+      el.dataset.value = i;
+      [...el.children].forEach(c=> c.classList.toggle('on', Number(c.dataset.val)<=i));
+    });
+    el.appendChild(span);
+  }
+}
+buildStars('starsOverall');
+buildStars('starsCleanliness');
+buildStars('starsPunctuality');
+
+document.getElementById('submitRatingBtn').addEventListener('click', async ()=>{
+  const stars = Number(document.getElementById('starsOverall').dataset.value);
+  if(!stars){ showToast('الرجاء اختيار تقييم عام أولًا'); return; }
+  const cleanliness = Number(document.getElementById('starsCleanliness').dataset.value) || null;
+  const punctuality = Number(document.getElementById('starsPunctuality').dataset.value) || null;
+  const comment = document.getElementById('ratingComment').value.trim() || null;
+
+  const btn = document.getElementById('submitRatingBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
+  try{
+    await api('/api/bookings/' + state.bookingId + '/rating', {
+      method:'POST',
+      body: JSON.stringify({ stars, cleanliness_stars:cleanliness, punctuality_stars:punctuality, comment }),
+    });
+    state.ratingSubmitted = true;
+    document.getElementById('ratingPanel').style.display = 'none';
+    document.getElementById('ratingDone').style.display = 'block';
+  }catch(err){
+    btn.disabled = false;
+    btn.textContent = 'إرسال التقييم';
+    showToast('تعذّر إرسال التقييم: ' + err.message);
+  }
+});
+function updateNextEnabled(){
+  const btn = document.getElementById('nextBtn');
+  let ok = true;
+  switch(state.step){
+    case 1: ok = state.services.length>0; break;
+    case 2: ok = !!state.staff; break;
+    case 3: ok = state.dateIdx!==null && !!state.time; break;
+    case 4: ok = state.address.trim().length>2 || !!state.geo; break;
+    case 5: ok = state.name.trim().length>1 && /^0\d{9}$/.test(state.phone.trim()); break;
+    case 6: ok = state.agree; break;
+    default: ok = true;
+  }
+  btn.disabled = !ok;
+}
+
+function showStep(n){
+  document.querySelectorAll('.step').forEach(s=>{
+    s.classList.toggle('active', Number(s.dataset.step)===n);
+  });
+  document.getElementById('progressFill').style.width = (n<=totalSteps ? (n/totalSteps*100) : 100) + '%';
+  const labels = ['اختيار الخدمة','اختيار الموظف','التاريخ والوقت','الموقع','بياناتك','الشروط','الملخص والدفع'];
+  if(n<=totalSteps){
+    document.getElementById('stepLabel').textContent = `الخطوة ${n} من ${totalSteps} — ${labels[n-1]}`;
+    document.getElementById('footerNav').style.display = 'flex';
+  } else {
+    document.getElementById('footerNav').style.display = 'none';
+  }
+  document.getElementById('backBtn').style.visibility = (n>1 && n<=totalSteps) ? 'visible' : 'hidden';
+  if(n===3){ renderDates(); renderTimes(); }
+  if(n===7){ renderSummary(); }
+  updateNextEnabled();
+  document.querySelector('.content').scrollTop = 0;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('backBtn').addEventListener('click', ()=>{
+  if(state.step>1){ state.step--; showStep(state.step); }
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(state.step===7){
+    payAndConfirm();
+    return;
+  }
+  if(state.step<totalSteps){
+    state.step++;
+    showStep(state.step);
+  }
+});
+
+async function payAndConfirm(){
+  const btn = document.getElementById('nextBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري إنشاء الحجز...';
+  try{
+    const staffToSend = state.staff==='any' ? 'any' : state.staff;
+    const booking = await api('/api/bookings', {
+      method:'POST',
+      body: JSON.stringify({
+        name: state.name,
+        phone: state.phone,
+        serviceIds: state.services,
+        staffId: staffToSend,
+        date: state.dateStr,
+        time: state.time,
+        address: state.address || null,
+        lat: state.geo ? Number(state.geo.lat) : null,
+        lng: state.geo ? Number(state.geo.lng) : null,
+      }),
+    });
+
+    btn.textContent = 'جاري معالجة الدفع...';
+    state.bookingId = booking.bookingId;
+
+    // في الوضع التجريبي (بدون مفتاح Moyasar حقيقي) نؤكد الدفع تلقائيًا لإكمال العرض التوضيحي.
+    // في الوضع الحقيقي، هنا يجب توجيه المستخدم إلى booking.payment.redirectUrl بدلًا من ذلك.
+    if(booking.payment.testMode){
+      await api('/api/payments/webhook', {
+        method:'POST',
+        body: JSON.stringify({ bookingId: booking.bookingId, paymentId: booking.payment.paymentId }),
+      });
+    } else {
+      window.location.href = booking.payment.redirectUrl;
+      return;
+    }
+
+    btn.textContent = 'التالي';
+    btn.disabled = false;
+    document.getElementById('bookingIdLabel').textContent = 'رقم الحجز #' + state.bookingId;
+    renderTracker(0);
+    state.ratingSubmitted = false;
+    document.getElementById('ratingPanel').style.display = 'none';
+    document.getElementById('ratingDone').style.display = 'none';
+    document.getElementById('managePanel').style.display = 'block';
+    document.getElementById('trackerList').style.display = 'block';
+    document.getElementById('demoBtn').style.display = 'block';
+    document.getElementById('cancelledNote').style.display = 'none';
+    showStep(8);
+    updateWhatsappLink();
+    api('/api/bookings/' + state.bookingId).then(b=>{ state.staffIdResolved = b.staff_id; }).catch(()=>{});
+    showToast('تم الدفع بنجاح — تم تأكيد حجزك فعليًا في قاعدة البيانات');
+  }catch(err){
+    btn.textContent = 'التالي';
+    btn.disabled = false;
+    showToast('تعذّر إتمام الحجز: ' + err.message);
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ---------- init: تحميل الخدمات والموظفين فعليًا من الخادم ---------- */
+async function init(){
+  try{
+    const [services, staff, settings] = await Promise.all([
+      api('/api/services'),
+      api('/api/staff'),
+      api('/api/settings/public'),
+    ]);
+    state.servicesCatalog = services.filter(s=>s.is_active);
+    state.staffCatalog = staff;
+    if(settings.support_whatsapp){
+      state.supportWhatsapp = settings.support_whatsapp;
+      updateWhatsappLink();
+      document.getElementById('whatsappFab').style.display = 'flex';
+    }
+  }catch(err){
+    showToast('تعذّر الاتصال بالخادم على ' + API_BASE + ' — شغّل الـ Backend أولًا');
+  }
+  renderServices();
+  renderStaff();
+  showStep(1);
+}
+function updateWhatsappLink(){
+  if(!state.supportWhatsapp) return;
+  const msg = state.bookingId
+    ? `مرحبًا، أحتاج مساعدة بخصوص حجزي رقم #${state.bookingId}`
+    : 'مرحبًا، لدي استفسار بخصوص الحجز';
+  document.getElementById('whatsappFab').href =
+    `https://wa.me/${state.supportWhatsapp}?text=${encodeURIComponent(msg)}`;
+}
+init();
+</script>
+</body>
+</html>
